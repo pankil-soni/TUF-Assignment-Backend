@@ -52,8 +52,52 @@ const getFlashcardById = async (req, res) => {
   }
 };
 
+const updateFlashcard = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: "Flashcard ID is required" });
+  }
+
+  const { question, answer, description } = req.body;
+
+  if (!question || !answer) {
+    return res.status(400).json({ error: "Question and answer are required" });
+  }
+
+  try {
+    const dbcard = await prismaClient.flashcard.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    if (!dbcard) {
+      return res.status(404).json({ error: "Flashcard not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  try {
+    const flashcard = await prismaClient.flashcard.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        question,
+        answer,
+        description,
+      },
+    });
+    res.status(200).json(flashcard);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createFlashcard,
   getAllFlashcards,
   getFlashcardById,
+  updateFlashcard,
 };

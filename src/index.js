@@ -1,4 +1,4 @@
-const flashcardRouter = require("./routes/flashcard");
+const flashcardRouter = require("./routes/flashcardRoutes");
 
 const express = require("express");
 const PORT = 5000;
