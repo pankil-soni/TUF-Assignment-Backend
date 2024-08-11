@@ -95,9 +95,42 @@ const updateFlashcard = async (req, res) => {
   }
 };
 
+const deleteFlashcard = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: "Flashcard ID is required" });
+  }
+
+  try {
+    const dbcard = await prismaClient.flashcard.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    if (!dbcard) {
+      return res.status(404).json({ error: "Flashcard not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+
+  try {
+    await prismaClient.flashcard.delete({
+      where: {
+        id: parseInt(id),
+      },
+    });
+    res.status(200).json({ message: "Flashcard deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   createFlashcard,
   getAllFlashcards,
   getFlashcardById,
   updateFlashcard,
+  deleteFlashcard,
 };
