@@ -1,10 +1,11 @@
 const flashcardRouter = require("./routes/flashcardRoutes");
-
 const express = require("express");
+var cors = require("cors");
 const PORT = 5000;
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
